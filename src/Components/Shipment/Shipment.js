@@ -36,7 +36,7 @@ const Shipment = (props) => {
         props.deliveryDetailsHandler(d);
         // console.log(d.paymentMethod.id);
 
-        setOrderId(d.paymentMethod.id);
+        setOrderId(d._id);
       });
   };
   const { door, road, flat, businessname, address } = props.deliveryDetails;
@@ -198,12 +198,12 @@ const Shipment = (props) => {
                   onClick={() => props.clearCart()}
                   className="btn btn-block btn-danger btn-secondary"
                 >
-                  Check Out Your Food
+                  Track Your Order!
                 </button>
               </Link>
             ) : (
               <button disabled className="btn btn-block btn-secondary">
-                Check Out Your Food
+                Track Your Order!
               </button>
             )}
           </div>
