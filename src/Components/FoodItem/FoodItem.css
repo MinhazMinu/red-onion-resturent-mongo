@@ -1,0 +1,7 @@
+.card-box {
+  box-shadow: 1px 5px 10px transparent;
+}
+
+.card-box:hover {
+  box-shadow: 1px 5px 10px lightgray;
+}
