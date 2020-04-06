@@ -11,22 +11,33 @@ const Shipment = (props) => {
   const stripePromise = loadStripe(
     "pk_test_JNFbMIc1RcL6EyosU4vkgjep00hLE5jnGF"
   );
-  const [shipInfoAdded, setShipInfoAdded] = useState(false);
+  const [shipInfo, setShipInfo] = useState(null);
+  const [orderId, setOrderId] = useState(null);
 
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = (data) => {
-    setShipInfoAdded(true);
+    setShipInfo(data);
+  };
+
+  const handlePlaceOrder = (paymentMethod) => {
+    const orderDetails = {
+      shipment: shipInfo,
+      paymentMethod: paymentMethod,
+    };
     fetch("http://localhost:4200/placeOrder", {
       method: "POST",
       headers: {
-        "COntent-Type": "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
-    }).then((res) =>
-      res.json().then((d) => {
+      body: JSON.stringify(orderDetails),
+    })
+      .then((res) => res.json())
+      .then((d) => {
         props.deliveryDetailsHandler(d);
-      })
-    );
+        // console.log(d.paymentMethod.id);
+
+        setOrderId(d.paymentMethod.id);
+      });
   };
   const { door, road, flat, businessname, address } = props.deliveryDetails;
 
@@ -44,7 +55,7 @@ const Shipment = (props) => {
     <div className="shipment container my-5">
       <div className="row">
         <div className="col-md-5">
-          <div style={{ display: shipInfoAdded ? "none" : "block" }}>
+          <div style={{ display: shipInfo ? "none" : "block" }}>
             <h4>Edit Delivery Details</h4>
             <hr />
             <form onSubmit={handleSubmit(onSubmit)} className="py-5">
@@ -121,13 +132,25 @@ const Shipment = (props) => {
               </div>
             </form>
           </div>
-          <div style={{ display: shipInfoAdded ? "block" : "none" }}>
+          {/* ====================================================== */}
+          <div style={{ display: shipInfo ? "block" : "none" }}>
             <h4 className="border-bottom mb-3 p-3">Payment Information</h4>
             <Elements stripe={stripePromise}>
-              <CheckoutForm />
+              <CheckoutForm handlePlaceOrder={handlePlaceOrder} />
             </Elements>
+            <br />
+            {orderId && (
+              <p>
+                {" "}
+                Thank you! Your Payment id is :{" "}
+                <span className="text-info">{orderId}</span>{" "}
+              </p>
+            )}
           </div>
         </div>
+        {/* ============================================== */}
+        {/* ============================================== */}
+        {/* ============================================== */}
         <div className="offset-md-2 col-md-5">
           <div className="restaurant-info mb-5">
             <h4>
@@ -169,7 +192,7 @@ const Shipment = (props) => {
             <p className="h5 d-flex justify-content-between">
               <span>Total</span> <span>${grandTotal.toFixed(2)}</span>
             </p>
-            {door && road && flat && businessname && address ? (
+            {orderId ? (
               <Link to="/order-complete">
                 <button
                   onClick={() => props.clearCart()}

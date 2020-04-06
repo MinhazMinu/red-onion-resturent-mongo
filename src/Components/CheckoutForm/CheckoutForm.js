@@ -3,7 +3,7 @@ import React from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 
-const CheckoutForm = () => {
+const CheckoutForm = (props) => {
   const [paymentError, setPaymentError] = useState(null);
   const [paymentFinished, setPaymentFinished] = useState(null);
   const stripe = useStripe();
@@ -20,6 +20,9 @@ const CheckoutForm = () => {
       setPaymentFinished(null);
     } else {
       setPaymentFinished(paymentMethod);
+      const payment = { id: paymentMethod.id, last4: paymentMethod.last4 };
+      props.handlePlaceOrder(payment);
+
       setPaymentError(null);
     }
   };
