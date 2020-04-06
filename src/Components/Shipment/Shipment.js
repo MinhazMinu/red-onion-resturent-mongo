@@ -3,17 +3,30 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import "./Shipment.css";
 import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../CheckoutForm/CheckoutForm";
 
 const Shipment = (props) => {
+  const stripePromise = loadStripe(
+    "pk_test_JNFbMIc1RcL6EyosU4vkgjep00hLE5jnGF"
+  );
+  const [shipInfoAdded, setShipInfoAdded] = useState(false);
+
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = (data) => {
+    setShipInfoAdded(true);
     fetch("http://localhost:4200/placeOrder", {
       method: "POST",
       headers: {
         "COntent-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((res) => res.json().then((d) => props.deliveryDetailsHandler(d)));
+    }).then((res) =>
+      res.json().then((d) => {
+        props.deliveryDetailsHandler(d);
+      })
+    );
   };
   const { door, road, flat, businessname, address } = props.deliveryDetails;
 
@@ -31,79 +44,89 @@ const Shipment = (props) => {
     <div className="shipment container my-5">
       <div className="row">
         <div className="col-md-5">
-          <h4>Edit Delivery Details</h4>
-          <hr />
-          <form onSubmit={handleSubmit(onSubmit)} className="py-5">
-            <div className="form-group">
-              <input
-                name="door"
-                className="form-control"
-                ref={register({ required: true })}
-                defaultValue={door}
-                placeholder="Delivery To Door"
-              />
-              {errors.door && (
-                <span className="error">This Option is required</span>
-              )}
-            </div>
-            <div className="form-group">
-              <input
-                name="road"
-                className="form-control"
-                ref={register({ required: true })}
-                defaultValue={road}
-                placeholder="Road No"
-              />
-              {errors.road && (
-                <span className="error">Road No is required</span>
-              )}
-            </div>
-            <div className="form-group">
-              <input
-                name="flat"
-                className="form-control"
-                ref={register({ required: true })}
-                defaultValue={flat}
-                placeholder="Flat, Suite or Floor"
-              />
-              {errors.flat && (
-                <span className="error">Flat, Suite or Floor is required</span>
-              )}
-            </div>
-            <div className="form-group">
-              <input
-                name="businessname"
-                className="form-control"
-                ref={register({ required: true })}
-                defaultValue={businessname}
-                placeholder="Business name"
-              />
-              {errors.businessname && (
-                <span className="error">Business name is required</span>
-              )}
-            </div>
-            <div className="form-group">
-              <textarea
-                name="address"
-                ref={register({ required: true })}
-                placeholder="Address"
-                className="form-control"
-                cols="30"
-                rows="2"
-              >
-                {address}
-              </textarea>
-              {errors.address && (
-                <span className="error">Password is required</span>
-              )}
-            </div>
+          <div style={{ display: shipInfoAdded ? "none" : "block" }}>
+            <h4>Edit Delivery Details</h4>
+            <hr />
+            <form onSubmit={handleSubmit(onSubmit)} className="py-5">
+              <div className="form-group">
+                <input
+                  name="door"
+                  className="form-control"
+                  ref={register({ required: true })}
+                  defaultValue={door}
+                  placeholder="Delivery To Door"
+                />
+                {errors.door && (
+                  <span className="error">This Option is required</span>
+                )}
+              </div>
+              <div className="form-group">
+                <input
+                  name="road"
+                  className="form-control"
+                  ref={register({ required: true })}
+                  defaultValue={road}
+                  placeholder="Road No"
+                />
+                {errors.road && (
+                  <span className="error">Road No is required</span>
+                )}
+              </div>
+              <div className="form-group">
+                <input
+                  name="flat"
+                  className="form-control"
+                  ref={register({ required: true })}
+                  defaultValue={flat}
+                  placeholder="Flat, Suite or Floor"
+                />
+                {errors.flat && (
+                  <span className="error">
+                    Flat, Suite or Floor is required
+                  </span>
+                )}
+              </div>
+              <div className="form-group">
+                <input
+                  name="businessname"
+                  className="form-control"
+                  ref={register({ required: true })}
+                  defaultValue={businessname}
+                  placeholder="Business name"
+                />
+                {errors.businessname && (
+                  <span className="error">Business name is required</span>
+                )}
+              </div>
+              <div className="form-group">
+                <textarea
+                  name="address"
+                  ref={register({ required: true })}
+                  placeholder="Address"
+                  className="form-control"
+                  cols="30"
+                  rows="2"
+                >
+                  {address}
+                </textarea>
+                {errors.address && (
+                  <span className="error">Password is required</span>
+                )}
+              </div>
 
-            <div className="form-group">
-              <button className="btn btn-danger btn-block" type="submit">
-                Save & Continue
-              </button>
-            </div>
-          </form>
+              <div className="form-group">
+                <button className="btn btn-danger btn-block" type="submit">
+                  Save & Continue
+                </button>
+              </div>
+            </form>
+          </div>
+          <div style={{ display: shipInfoAdded ? "block" : "none" }}>
+            <h4 className="border-bottom mb-3 p-3">Payment Information</h4>
+            <Elements stripe={stripePromise}>
+              <CheckoutForm />
+            </Elements>
+          </div>
         </div>
         <div className="offset-md-2 col-md-5">
           <div className="restaurant-info mb-5">

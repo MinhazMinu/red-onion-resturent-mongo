@@ -2,6 +2,7 @@ import React from "react";
 import MapImg from "../../Images/ordercomplete.png";
 import Rider from "../../Images/Image/rider.png";
 import RiderHalmet from "../../Images/Image/helmet.png";
+
 const OrderComplete = (props) => {
   return (
     <div className="container my-5">
