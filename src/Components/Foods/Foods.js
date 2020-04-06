@@ -9,7 +9,7 @@ const Foods = (props) => {
   const [foods, setFoods] = useState([]);
   const [selectedFoodType, setSelectedFoodType] = useState("Breakfast");
   useEffect(() => {
-    fetch("http://localhost:4200/foods")
+    fetch("https://red-onion-mongp.herokuapp.com/foods")
       .then((res) => res.json())
       .then((data) => {
         setFoods(data);

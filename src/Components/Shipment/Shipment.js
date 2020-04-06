@@ -24,7 +24,7 @@ const Shipment = (props) => {
       shipment: shipInfo,
       paymentMethod: paymentMethod,
     };
-    fetch("http://localhost:4200/placeOrder", {
+    fetch("https://red-onion-mongp.herokuapp.com/placeOrder", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

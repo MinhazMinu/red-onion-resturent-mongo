@@ -10,7 +10,7 @@ const FoodDetails = (props) => {
 
   const [currentFood, setCurrentFood] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:4200/food/${id}`)
+    fetch(`https://red-onion-mongp.herokuapp.com/food/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
