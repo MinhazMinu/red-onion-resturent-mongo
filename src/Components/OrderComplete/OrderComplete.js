@@ -4,6 +4,8 @@ import Rider from "../../Images/Image/rider.png";
 import RiderHalmet from "../../Images/Image/helmet.png";
 
 const OrderComplete = (props) => {
+  console.log(props);
+
   return (
     <div className="container my-5">
       <div className="row">
@@ -15,9 +17,16 @@ const OrderComplete = (props) => {
             <img className="w-25 ml-5" src={Rider} alt="" />
             <div className="bg-white  rounded p-3 my-3">
               <div>
+                <h5>Your Name</h5>
+                <p className="text-success">
+                  {props.deliveryDetails.shipment.door}
+                </p>
+              </div>
+              <div>
                 <h5>Your Location</h5>
                 <p className="text-success">
-                  {props.deliveryDetails.flat}, {props.deliveryDetails.road}
+                  {props.deliveryDetails.shipment.flat},{" "}
+                  {props.deliveryDetails.shipment.road}
                 </p>
               </div>
               <div>
